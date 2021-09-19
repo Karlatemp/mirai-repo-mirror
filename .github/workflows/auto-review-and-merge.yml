@@ -9,24 +9,19 @@ on:
 jobs:
   start-review:
     runs-on: ubuntu-latest
+    env:
+      PR_NUM: ${{ github.event.pull_request.number }}
     steps:
+        # It checkout the origin repository not pull request. Very safe
       - uses: actions/checkout@v2
       - name: Pre setup
         run: |
-          echo $TRY_PR
-
-          git rev-parse HEAD
-          git show $GITHUB_SHA
-          git show $TRY_PR
-
+          git fetch origin pull/$PR_NUM/head:BRANCHNAME
           git checkout "$GITHUB_SHA" -- tmp
           echo git diff
           git --no-pager diff "$TRY_PR..$GITHUB_SHA" --no-color --output tmp/change-diff
           git --no-pager diff "$TRY_PR..$GITHUB_SHA" --name-only --output tmp/name-changed
 
-          echo git checkout
-          git checkout "$GITHUB_SHA" -- .script
-          git checkout "$GITHUB_SHA" -- protected
         env:
           TRY_PR: ${{ github.event.pull_request.head.sha }}
       - run: cat .script/check-pr.js
@@ -34,6 +29,5 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           ACTOR: ${{ github.event.pull_request.user.login }}
-          PR_NUM: ${{ github.event.pull_request.number }}
           REPO_N: ${{ github.event.repository.full_name }}
 
