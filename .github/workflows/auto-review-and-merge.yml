@@ -23,8 +23,7 @@ jobs:
           git checkout "$GITHUB_SHA" -- .script
           git checkout "$GITHUB_SHA" -- protected
         env:
-          BASE: origin/${{ github.event.pull_request.base.ref }}
-          TRY_PR: origin/${{ github.event.pull_request.head.ref }}
+          TRY_PR: ${{ github.event.pull_request.head.sha }}
       - run: cat .script/check-pr.js
       - run: node .script/check-pr.js
         env:
