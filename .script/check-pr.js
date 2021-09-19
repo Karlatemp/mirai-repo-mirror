@@ -110,15 +110,15 @@ async function main() {
             'Content-Type': 'application/vnd.github.v3+json',
             'Authorization': `token ${process.env.GH_TOKEN}`,
         }
-    });
-    mergeRequest.write(JSON.stringify({
-        sha: require('child_process').execSync('git rev-parse THE_PR').toString('utf-8'),
-        merge_method: commitCount > 1 ? 'squash' : 'merge',
-    }), rsp => {
+    }, rsp => {
         rsp.on('data', d => {
             process.stdout.write(d);
         });
     });
+    mergeRequest.write(JSON.stringify({
+        sha: require('child_process').execSync('git rev-parse THE_PR').toString('utf-8'),
+        merge_method: commitCount > 1 ? 'squash' : 'merge',
+    }));
     mergeRequest.end();
 }
 
