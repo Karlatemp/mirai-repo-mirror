@@ -14,6 +14,11 @@ jobs:
       - name: Pre setup
         run: |
           echo $TRY_PR
+
+          git rev-parse HEAD
+          git show $GITHUB_SHA
+          git show $TRY_PR
+
           git checkout "$GITHUB_SHA" -- tmp
           echo git diff
           git --no-pager diff "$TRY_PR..$GITHUB_SHA" --no-color --output tmp/change-diff
