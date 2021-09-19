@@ -20,7 +20,7 @@ jobs:
             let ref = process.env.GITHUB_REF;
             ref = 'origin/' + ref.substring(ref.lastIndexOf('/') + 1);
             let cmd = require('child_process').execSync('git rev-parse ' + ref).toString('utf-8');
-            require('fs').writeSync('tmp/rcrf', cmd.trim());
+            require('fs').writeFileSync('tmp/rcrf', cmd.trim());
       - name: Pre setup
         run: |
           BASE=$(cat tmp/rcrf)
