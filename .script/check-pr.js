@@ -43,7 +43,7 @@ async function main() {
     }
 
     let nameChanged = fs.readFileSync('tmp/name-changed').toString('utf-8');
-    console.log("Changed list: " + name);
+    console.log("Changed list: " + nameChanged);
     for (const line of nameChanged.split('\n')) {
         if (line[0] === '.') {
             await fireError("Modifying a hidden directory");
