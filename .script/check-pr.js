@@ -9,6 +9,7 @@ async function main() {
     console.log("Conf: ", config);
 
     function inDomain(thiz, target) {
+        thiz = thiz.replaceAll('/', '.');
         console.log("[inDomain] Checking " + thiz + " is in " + target);
         return thiz === target || thiz.startsWith(target + '.')
     }
@@ -42,7 +43,7 @@ async function main() {
         req.end();
     }
 
-    let nameChanged = fs.readFileSync('tmp/name-changed').toString('utf-8');
+    let nameChanged = fs.readFileSync('tmp/name-changed').toString('utf-8').trim();
     console.log("Changed list: " + nameChanged);
     for (const line of nameChanged.split('\n')) {
         if (line[0] === '.') {
@@ -50,7 +51,7 @@ async function main() {
             return
         }
         for (let protectedDomain of config.protectedDomains) {
-            if (inDomain(line.replace('/', '.'), protectedDomain)) {
+            if (inDomain(line, protectedDomain)) {
                 await fireError("Modifying protected domain: " + protectedDomain);
                 return
             }
