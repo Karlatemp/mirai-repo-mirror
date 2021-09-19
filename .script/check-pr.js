@@ -71,10 +71,13 @@ async function main() {
         }
     }
 
+    let noDomainFiles = [];
     for (let file of nameChanged.split('\n')) {
         let dom = file.replace('/', '.');
+        let hasDomain = false;
         for (let domain in config.domainOwners) {
             if (inDomain(dom, domain)) {
+                hasDomain = true;
                 let isAllowed = false;
                 for (let allowed of config.domainOwners[domain]) {
                     if (allowed.toLowerCase() === actor.toLowerCase()) {
@@ -83,13 +86,21 @@ async function main() {
                     }
                 }
                 if (!isAllowed) {
+                    await fireError("Modifying domain " + domain + " but no permission", APPROVE);
                     return
                 }
             }
         }
+        if (!hasDomain) {
+            noDomainFiles.push(file);
+        }
     }
 
-    await fireError("Bot review success", APPROVE)
+    if (noDomainFiles.length === 0) {
+        await fireError("Contains files with no domain: \n\n" + noDomainFiles.join("\n"));
+    }
+
+    await fireError("Bot review success", APPROVE);
 }
 
 main().catch(e => {
