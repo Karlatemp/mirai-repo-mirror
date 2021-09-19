@@ -9,7 +9,7 @@ async function main() {
     console.log("Conf: ", config);
 
     function inDomain(thiz, target) {
-        thiz = thiz.replaceAll('/', '.');
+        thiz = thiz.replace(/\//g, '.');
         console.log("[inDomain] Checking " + thiz + " is in " + target);
         return thiz === target || thiz.startsWith(target + '.')
     }
