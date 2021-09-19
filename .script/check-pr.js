@@ -2,6 +2,9 @@ let fs = require('fs');
 let config = require('../protected/config')
 let actor = process.env.ACTOR;
 
+const APPROVE = 'APPROVE';
+const COMMENT = 'COMMENT';
+
 if (actor === undefined) process.exit(5);
 
 async function main() {
@@ -14,8 +17,11 @@ async function main() {
         return thiz === target || thiz.startsWith(target + '.')
     }
 
-    async function fireError(content) {
+    async function fireError(content, type) {
         console.log("FIRE ERROR:", content);
+        if (type === undefined) {
+            type = 'REQUEST_CHANGES';
+        }
         let https = require('https');
         let req = https.request({
             host: 'api.github.com',
@@ -38,7 +44,7 @@ async function main() {
         });
         req.write(JSON.stringify({
             body: content,
-            event: 'REQUEST_CHANGES',
+            event: type,
         }));
         req.end();
     }
@@ -60,7 +66,7 @@ async function main() {
     for (const line of nameChanged.split('\n')) {
         if (line.indexOf('/') === -1) {
             // contains top-level file edit
-            await fireError("Contains top level file: " + line);
+            await fireError("Contains top level file: " + line, COMMENT);
             return;
         }
     }
@@ -83,7 +89,7 @@ async function main() {
         }
     }
 
-    await fireError("TODO: Auto-merge")
+    await fireError("Bot review success")
 }
 
 main().catch(e => {
