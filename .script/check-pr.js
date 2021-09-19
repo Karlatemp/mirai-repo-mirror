@@ -2,8 +2,6 @@ let fs = require('fs');
 let config = require('../protected/config')
 let actor = process.env.ACTOR;
 
-console.log(process.env);
-
 if (actor === undefined) process.exit(5);
 
 async function main() {
@@ -23,6 +21,10 @@ async function main() {
                 'Content-Type': 'application/vnd.github.v3+json',
                 'Authorization': `token ${process.env.GH_TOKEN}`
             }
+        }, rsp => {
+            rsp.on('data', d => {
+                process.stdout.write(d);
+            });
         });
         req.on('error', msg => {
             console.error(msg);
