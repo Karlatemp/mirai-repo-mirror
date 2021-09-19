@@ -101,7 +101,25 @@ async function main() {
         return
     }
 
-    await fireError("Bot review success", APPROVE);
+    const commitCount = parseInt(fs.readFileSync("tmp/count").toString('utf-8'));
+    await fireError("OK", APPROVE);
+
+    let mergeRequest = require('https').request({
+        host: 'api.github.com',
+        port: 443,
+        path: `/repos/${process.env.REPO_N}/pulls/${process.env.PR_NUM}/merge`,
+        method: 'PUT',
+        headers: {
+            'User-Agent': 'NodeJs/10',
+            'Content-Type': 'application/vnd.github.v3+json',
+            'Authorization': `token ${process.env.GH_TOKEN}`,
+        }
+    });
+    mergeRequest.write(JSON.stringify({
+        sha: require('child_process').execSync('git rev-parse THE_PR').toString('utf-8'),
+        merge_method: commitCount > 1 ? 'squash' : 'merge',
+    }));
+    mergeRequest.end();
 }
 
 main().catch(e => {

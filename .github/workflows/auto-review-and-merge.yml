@@ -4,7 +4,6 @@ on:
   pull_request_target:
     types:
       - ready_for_review
-      - converted_to_draft
 
 jobs:
   start-review:
@@ -20,6 +19,8 @@ jobs:
           git fetch origin pull/$PR_NUM/head:THE_PR
           echo $BASE_SHA
 
+          git rev-list --count "$BASE_SHA..THE_PR" > tmp/count
+          cat tmp/count
           git --no-pager diff "$BASE_SHA..THE_PR" --no-color --output tmp/change-diff
           git --no-pager diff "$BASE_SHA..THE_PR" --name-only --output tmp/name-changed
 
