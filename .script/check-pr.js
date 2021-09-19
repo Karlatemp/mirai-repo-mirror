@@ -89,7 +89,7 @@ async function main() {
         }
     }
 
-    await fireError("Bot review success")
+    await fireError("Bot review success", APPROVE)
 }
 
 main().catch(e => {
