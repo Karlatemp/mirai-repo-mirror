@@ -11,20 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Pre setup 1
-        run: |
-          echo "$SCRIPT" > tmp/prepare.js
-          node tmp/prepare.js
-        env:
-          SCRIPT: |
-            let ref = process.env.GITHUB_REF;
-            ref = 'origin/' + ref.substring(ref.lastIndexOf('/') + 1);
-            let cmd = require('child_process').execSync('git rev-parse ' + ref).toString('utf-8');
-            require('fs').writeFileSync('tmp/rcrf', cmd.trim());
       - name: Pre setup
         run: |
-          cat tmp/rcrf
-          BASE=$(cat tmp/rcrf)
           echo $BASE
 
           git checkout "$BASE" -- tmp
@@ -33,6 +21,8 @@ jobs:
 
           git checkout "$GITHUB_SHA" -- .script
           git checkout "$GITHUB_SHA" -- protected
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
       - run: cat .script/check-pr.js
       - run: node .script/check-pr.js
         env:
