@@ -12,16 +12,16 @@ jobs:
     env:
       PR_NUM: ${{ github.event.pull_request.number }}
       BASE_SHA: ${{ github.event.pull_request.base.sha }}
-      PR_SHA: ${{ github.event.pull_request.head.sha }}
     steps:
       # It checkout the origin repository not pull request. Very safe
       - uses: actions/checkout@v2
       - name: Pre setup
         run: |
-          git fetch origin pull/$PR_NUM/head:BRANCHNAME
+          git fetch origin pull/$PR_NUM/head:THE_PR
+          echo $BASE_SHA
 
-          git --no-pager diff "$PR_SHA..$BASE_SHA" --no-color --output tmp/change-diff
-          git --no-pager diff "$PR_SHA..$BASE_SHA" --name-only --output tmp/name-changed
+          git --no-pager diff "$THE_PR..$BASE_SHA" --no-color --output tmp/change-diff
+          git --no-pager diff "$THE_PR..$BASE_SHA" --name-only --output tmp/name-changed
 
       - run: node .script/check-pr.js
         env:
