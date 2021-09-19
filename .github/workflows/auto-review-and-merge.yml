@@ -14,6 +14,7 @@ jobs:
       - name: Pre setup
         run: |
           echo $BASE
+          echo $GITHUB_SHA
 
           echo git checkout
           git checkout "$BASE" -- tmp
@@ -22,8 +23,8 @@ jobs:
           git --no-pager diff "$BASE..$GITHUB_SHA" --name-only --output tmp/name-changed
 
           echo git checkout
-          git checkout "$BASE" -- .script
-          git checkout "$BASE" -- protected
+          git checkout "$GITHUB_SHA" -- .script
+          git checkout "$GITHUB_SHA" -- protected
         env:
           BASE: origion/${{ github.event.pull_request.base.ref }}
       - run: cat .script/check-pr.js
