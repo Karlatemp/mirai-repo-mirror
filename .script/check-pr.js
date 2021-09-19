@@ -96,8 +96,9 @@ async function main() {
         }
     }
 
-    if (noDomainFiles.length === 0) {
+    if (noDomainFiles.length !== 0) {
         await fireError("Contains files with no domain: \n\n" + noDomainFiles.join("\n"));
+        return
     }
 
     await fireError("Bot review success", APPROVE);
