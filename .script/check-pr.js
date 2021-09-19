@@ -86,7 +86,7 @@ async function main() {
                     }
                 }
                 if (!isAllowed) {
-                    await fireError("Modifying domain " + domain + " but no permission", APPROVE);
+                    await fireError("Modifying domain " + domain + " but no permission");
                     return
                 }
             }
