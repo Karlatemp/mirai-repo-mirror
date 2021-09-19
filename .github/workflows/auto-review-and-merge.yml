@@ -3,28 +3,26 @@ name: Auto Review
 on:
   pull_request_target:
     types:
-    - ready_for_review
-    - converted_to_draft
+      - ready_for_review
+      - converted_to_draft
 
 jobs:
   start-review:
     runs-on: ubuntu-latest
     env:
       PR_NUM: ${{ github.event.pull_request.number }}
+      BASE_SHA: ${{ github.event.pull_request.base.sha }}
+      PR_SHA: ${{ github.event.pull_request.head.sha }}
     steps:
-        # It checkout the origin repository not pull request. Very safe
+      # It checkout the origin repository not pull request. Very safe
       - uses: actions/checkout@v2
       - name: Pre setup
         run: |
           git fetch origin pull/$PR_NUM/head:BRANCHNAME
-          git checkout "$GITHUB_SHA" -- tmp
-          echo git diff
-          git --no-pager diff "$TRY_PR..$GITHUB_SHA" --no-color --output tmp/change-diff
-          git --no-pager diff "$TRY_PR..$GITHUB_SHA" --name-only --output tmp/name-changed
 
-        env:
-          TRY_PR: ${{ github.event.pull_request.head.sha }}
-      - run: cat .script/check-pr.js
+          git --no-pager diff "$PR_SHA..$BASE_SHA" --no-color --output tmp/change-diff
+          git --no-pager diff "$PR_SHA..$BASE_SHA" --name-only --output tmp/name-changed
+
       - run: node .script/check-pr.js
         env:
           GH_TOKEN: ${{ github.token }}
