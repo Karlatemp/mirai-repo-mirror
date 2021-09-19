@@ -2,7 +2,9 @@ let fs = require('fs');
 let config = require('../protected/config')
 let actor = process.env.ACTOR;
 
-if (actor === undefined) process.exit(0);
+console.log(process.env);
+
+if (actor === undefined) process.exit(5);
 
 async function main() {
     function inDomain(thiz, target) {
