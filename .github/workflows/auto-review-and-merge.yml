@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Pre setup
-        run: >
+        run: |
           git checkout "$GITHUB_SHA" -- tmp
           git --no-pager diff "$GITHUB_REF..$GITHUB_SHA" --no-color --output tmp/change-diff
           git --no-pager diff "$GITHUB_REF..$GITHUB_SHA" --name-only --output tmp/name-changed
