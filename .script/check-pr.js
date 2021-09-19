@@ -10,6 +10,7 @@ async function main() {
     }
 
     async function fireError(content) {
+        console.log("FIRE ERROR:", content);
         let https = require('https');
         let req = https.request({
             host: 'api.github.com',
