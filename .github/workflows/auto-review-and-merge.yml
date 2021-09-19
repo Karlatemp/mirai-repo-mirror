@@ -11,9 +11,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Pre setup 1
+        run: |
+          echo "$SCRIPT" > tmp/prepare.js
+          node tmp/prepare.js
+        env:
+          SCRIPT: |
+            let cmd = require('child_process').execSync('').toString('utf-8');
+            require('fs').writeSync('tmp/rcrf', cmd.trim());
       - name: Pre setup
         run: |
-          BASE=$(git rev-parse refs/heads/master)
+          BASE=$(cat tmp/rcrf)
           echo $BASE
 
           git checkout "$BASE" -- tmp
