@@ -115,8 +115,10 @@ async function main() {
             process.stdout.write(d);
         });
     });
+    let sha = require('child_process').execSync('git rev-parse THE_PR').toString('utf-8').trim();
+    console.log("Merge with sha " + sha);
     mergeRequest.write(JSON.stringify({
-        sha: require('child_process').execSync('git rev-parse THE_PR').toString('utf-8'),
+        sha: sha,
         merge_method: commitCount > 1 ? 'squash' : 'merge',
     }));
     mergeRequest.end();
