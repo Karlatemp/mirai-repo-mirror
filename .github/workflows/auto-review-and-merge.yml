@@ -15,14 +15,17 @@ jobs:
         run: |
           echo $BASE
 
+          echo git checkout
           git checkout "$BASE" -- tmp
+          echo git diff
           git --no-pager diff "$BASE..$GITHUB_SHA" --no-color --output tmp/change-diff
           git --no-pager diff "$BASE..$GITHUB_SHA" --name-only --output tmp/name-changed
 
-          git checkout "$GITHUB_SHA" -- .script
-          git checkout "$GITHUB_SHA" -- protected
+          echo git checkout
+          git checkout "$BASE" -- .script
+          git checkout "$BASE" -- protected
         env:
-          BASE: ${{ github.event.pull_request.base.sha }}
+          BASE: origion/${{ github.event.pull_request.base.ref }}
       - run: cat .script/check-pr.js
       - run: node .script/check-pr.js
         env:
