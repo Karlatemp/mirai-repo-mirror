@@ -5,7 +5,11 @@ let actor = process.env.ACTOR;
 if (actor === undefined) process.exit(5);
 
 async function main() {
+    console.log("Main called");
+    console.log("Conf: ", config);
+
     function inDomain(thiz, target) {
+        console.log("[inDomain] Checking " + thiz + " is in " + target);
         return thiz === target || thiz.startsWith(target + '.')
     }
 
@@ -39,6 +43,7 @@ async function main() {
     }
 
     let nameChanged = fs.readFileSync('tmp/name-changed').toString('utf-8');
+    console.log("Changed list: " + name);
     for (const line of nameChanged.split('\n')) {
         if (line[0] === '.') {
             await fireError("Modifying a hidden directory");
@@ -51,12 +56,13 @@ async function main() {
             }
         }
     }
-    nameChanged.split('\n').forEach(line => {
+    for (const line of nameChanged.split('\n')) {
         if (line.indexOf('/') === -1) {
             // contains top-level file edit
-            process.exit(0)
+            await fireError("Contains top level file: " + line);
+            return;
         }
-    });
+    }
 
     for (let file of nameChanged.split('\n')) {
         let dom = file.replace('/', '.');
