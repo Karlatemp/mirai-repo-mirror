@@ -23,6 +23,7 @@ jobs:
             require('fs').writeFileSync('tmp/rcrf', cmd.trim());
       - name: Pre setup
         run: |
+          cat tmp/rcrf
           BASE=$(cat tmp/rcrf)
           echo $BASE
 
